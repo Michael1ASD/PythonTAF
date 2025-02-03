@@ -35,6 +35,9 @@ LOGIN_BUTTON_LOC = (By.XPATH, "//input[@id='login-button']")
 APP_LOGO_LOC = (By.XPATH, "//div[@class='app_logo']")
 APP_LOGO_EXPECTED = 'Swag Labs'
 
+ERROR_WRONG_LOGIN_EXPECTED = 'Epic sadface: Username and password do not match any user in this service'
+ERROR_LOC = (By.CSS_SELECTOR, "h3[data-test='error']")
+
 #TEST DATA
 # Accepted usernames are:
 USERNAME_VALID = 'standard_user'
@@ -49,52 +52,28 @@ PASSWORD_VALID = 'secret_sauce'
 
 # ********
 
-#Test case 1: Login page is visible
-#ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-
-#ACT
-sut.get(BASE_URL)
-actual_title = sut.title
-
-try:
-    #ASSERT
-    assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
-
-#TEARMDOWN
-sut.quit()
-
-# ********
-
-#Test case 2: Successful login
-#ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-
-#ACT
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
-
-try:
-    #ASSERT
-    app_logo_actual = sut.find_element(*APP_LOGO_LOC)
-    assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
-
-#TEARMDOWN
-sut.quit()
-
-# ********
-
-# #Test case 3: Failed login
+# #Test case 1: Login page is visible
+# #ARRANGE
+# sut = webdriver.Chrome(options=chrome_options)
+# sut.get(BASE_URL)
+#
+# #ACT
+# sut.get(BASE_URL)
+# actual_title = sut.title
+#
+# try:
+#     #ASSERT
+#     assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
+#
+# except Exception as e:
+#     print(f"An error occurred: {e}")
+#
+# #TEARMDOWN
+# sut.quit()
+#
+# # ********
+#
+# #Test case 2: Successful login
 # #ARRANGE
 # sut = webdriver.Chrome()
 # sut.get(BASE_URL)
@@ -108,10 +87,34 @@ sut.quit()
 # try:
 #     #ASSERT
 #     app_logo_actual = sut.find_element(*APP_LOGO_LOC)
-#     assert app_logo_actual.text== APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
+#     assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
 #
 # except Exception as e:
 #     print(f"An error occurred: {e}")
 #
 # #TEARMDOWN
 # sut.quit()
+
+# ********
+
+#Test case 3: Failed login
+#ARRANGE
+sut = webdriver.Chrome()
+sut.get(BASE_URL)
+
+#ACT
+sut.get(BASE_URL)
+sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
+sut.find_element(*LOGIN_BUTTON_LOC).click()
+
+try:
+    #ASSERT
+    error_banner = sut.find_element(*ERROR_LOC)
+    assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+
+#TEARMDOWN
+sut.quit()
