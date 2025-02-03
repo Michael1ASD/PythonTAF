@@ -34,9 +34,9 @@ LOGIN_PAGE_TITLE_EXPECTED = 'Swag Labs'
 LOGIN_BUTTON_LOC = (By.XPATH, "//input[@id='login-button']")
 APP_LOGO_LOC = (By.XPATH, "//div[@class='app_logo']")
 APP_LOGO_EXPECTED = 'Swag Labs'
-
 ERROR_WRONG_LOGIN_EXPECTED = 'Epic sadface: Username and password do not match any user in this service'
 ERROR_LOC = (By.CSS_SELECTOR, "h3[data-test='error']")
+SHOPPING_CART_NUMBER_LOC = (By.XPATH, "//span[@class='shopping_cart_badge']")
 
 #TEST DATA
 # Accepted usernames are:
@@ -51,7 +51,7 @@ USERNAME_VALID = 'standard_user'
 PASSWORD_VALID = 'secret_sauce'
 
 # ********
-
+#
 # #Test case 1: Login page is visible
 # #ARRANGE
 # sut = webdriver.Chrome(options=chrome_options)
@@ -94,10 +94,34 @@ PASSWORD_VALID = 'secret_sauce'
 #
 # #TEARMDOWN
 # sut.quit()
+#
+# ********
+
+# #Test case 3: Failed login
+# #ARRANGE
+# sut = webdriver.Chrome()
+# sut.get(BASE_URL)
+#
+# #ACT
+# sut.get(BASE_URL)
+# sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+# sut.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
+# sut.find_element(*LOGIN_BUTTON_LOC).click()
+#
+# try:
+#     #ASSERT
+#     error_banner = sut.find_element(*ERROR_LOC)
+#     assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
+#
+# except Exception as e:
+#     print(f"An error occurred: {e}")
+#
+# #TEARMDOWN
+# sut.quit()
 
 # ********
 
-#Test case 3: Failed login
+#Test case 4: Check if cart is empty
 #ARRANGE
 sut = webdriver.Chrome()
 sut.get(BASE_URL)
@@ -105,16 +129,18 @@ sut.get(BASE_URL)
 #ACT
 sut.get(BASE_URL)
 sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
 sut.find_element(*LOGIN_BUTTON_LOC).click()
 
 try:
     #ASSERT
-    error_banner = sut.find_element(*ERROR_LOC)
-    assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
+    is_invisible = WebDriverWait(sut, 2).until(EC.invisibility_of_element_located(SHOPPING_CART_NUMBER_LOC))
+    assert is_invisible, f"Element {is_invisible} should not be visible!"
+    print("Test passed")
 
 except Exception as e:
     print(f"An error occurred: {e}")
 
 #TEARMDOWN
 sut.quit()
+
