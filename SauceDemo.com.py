@@ -84,7 +84,7 @@ sut.find_element(*LOGIN_BUTTON_LOC).click()
 try:
     #ASSERT
     app_logo_actual = sut.find_element(*APP_LOGO_LOC)
-    assert app_logo_actual.text== APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
+    assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
 
 except Exception as e:
     print(f"An error occurred: {e}")
