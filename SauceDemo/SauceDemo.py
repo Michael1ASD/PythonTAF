@@ -1,3 +1,6 @@
+#Tested page: https://www.saucedemo.com/
+
+
 #IMPORTS
 import time
 import unittest
@@ -8,6 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
+
 
 #SUPPORT
 # WebDriverWait(sut, 10).until(EC.element_to_be_clickable(SUBPAGE_WAIT_CONDITIONS_BUTTON)).click()
@@ -44,6 +49,12 @@ LEFT_MENU_BURGER_CLOSE_BUTTON = (By.XPATH, "//button[@id='react-burger-cross-btn
 LOGOUT_BUTTON = (By.XPATH, "//a[@id='logout_sidebar_link']")
 ALL_ITEMS_BUTTON = (By.XPATH, "//a[@id='inventory_sidebar_link']")
 SHOPPING_CART_LOC = (By.XPATH, "//a[@class='shopping_cart_link']")
+LEFT_MENU_BURGER_RESET_APP_STATUS_BUTTON = (By.XPATH, "//a[@id='reset_sidebar_link']")
+SORT_PRODUCTS_DROPDOWN = (By.XPATH, "//select[@class='product_sort_container']")
+LEFT_MENU_BURGER_RESET_APP_STATUS_BUTTON = (By.XPATH, "//a[@id='reset_sidebar_link']")
+SORT_PRODUCTS_DROPDOWN = (By.XPATH, "//select[@class='product_sort_container']")
+
+SORTING_METHODS_DICT = {"NAME ASC" : "Name (A to Z)", "NAME DESC" : "Name (Z to A)", "PRICE ASC" : "Price  (low to high)", "PRICE DESC" : "Price  (high to low)"}
 
 #TEST DATA
 # Accepted usernames are:
@@ -61,24 +72,15 @@ PASSWORD_VALID = 'secret_sauce'
 
 #Test case 1: Login page is visible
 #ARRANGE
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Enable headless mode
-chrome_options.add_argument("--no-sandbox")  # Bypass OS security model (Linux)
-chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
-chrome_options.add_argument("--window-size=1920,1080")
-
 sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 
 #ACT
 actual_title = sut.title
 
-try:
-    #ASSERT
-    assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
+#ASSERT
+assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
 
-except Exception as e:
-    print(f"An error occurred: {e}")
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
@@ -88,7 +90,7 @@ sut.quit()
 
 #Test case 2: Successful login
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 
 #ACT
@@ -96,13 +98,10 @@ sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
 sut.find_element(*LOGIN_BUTTON_LOC).click()
 
-try:
-    #ASSERT
-    app_logo_actual = sut.find_element(*APP_LOGO_LOC)
-    assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
+#ASSERT
+app_logo_actual = sut.find_element(*APP_LOGO_LOC)
+assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
 
-except Exception as e:
-    print(f"An error occurred: {e}")
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
@@ -112,7 +111,7 @@ sut.quit()
 
 #Test case 3: Failed login
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 
 #ACT
@@ -120,13 +119,9 @@ sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
 sut.find_element(*LOGIN_BUTTON_LOC).click()
 
-try:
-    #ASSERT
-    error_banner = sut.find_element(*ERROR_LOC)
-    assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
+#ASSERT
+error_banner = sut.find_element(*ERROR_LOC)
+assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
@@ -136,20 +131,18 @@ sut.quit()
 
 #Test case 4: Check if cart is empty
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
 sut.find_element(*LOGIN_BUTTON_LOC).click()
 
 #ACT
-try:
-    #ASSERT
-    is_invisible = WebDriverWait(sut, 1).until(EC.invisibility_of_element_located(SHOPPING_CART_NUMBER_LOC))
-    assert is_invisible, f"Element {is_invisible} should not be visible!"
 
-except Exception as e:
-    print(f"An error occurred: {e}")
+#ASSERT
+is_invisible = WebDriverWait(sut, 1).until(EC.invisibility_of_element_located(SHOPPING_CART_NUMBER_LOC))
+assert is_invisible, f"Element {is_invisible} should not be visible!"
+
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
@@ -159,7 +152,7 @@ sut.quit()
 
 #Test case 5: Logout
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
@@ -170,12 +163,8 @@ sut.find_element(*LEFT_MENU_BURGER_OPEN_BUTTON).click()
 WebDriverWait(sut, 3).until(EC.element_to_be_clickable(LOGOUT_BUTTON)).click()
 actual_title = sut.title
 
-try:
-    #ASSERT
-    assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
+#ASSERT
+assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
 
 # TEARDOWN
 sut.quit()
@@ -184,7 +173,7 @@ sut.quit()
 
 #Test case 6: Add all (6) items to the cart
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
@@ -198,13 +187,8 @@ for index in range(6):
 sut.find_element(*SHOPPING_CART_LOC).click()
 inventory_count = len(WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
 
-try:
-
-    #ASSERT
-    assert inventory_count == 6, f"Expected number of items is 6, but got '{inventory_count}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
+#ASSERT
+assert inventory_count == 6, f"Expected number of items is 6, but got '{inventory_count}'"
 
 # TEARDOWN
 sut.quit()
@@ -214,7 +198,7 @@ sut.quit()
 
 #Test case 7: Remove item from cart
 #ARRANGE
-sut = webdriver.Chrome()
+sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
 sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
@@ -228,14 +212,39 @@ inventory_count = len(WebDriverWait(sut, 3).until(EC.presence_of_all_elements_lo
 sut.find_element(By.CLASS_NAME, "cart_button").click()
 is_invisible = WebDriverWait(sut, 1).until(EC.invisibility_of_element_located((By.XPATH, "//button[text()='Remove']")))
 
-try:
-    #ASSERT
-    assert is_invisible == True, f"Expected False, but got '{is_invisible}'"
-
-except Exception as e:
-    print(f"An error occurred: {e}")
+#ASSERT
+assert is_invisible == True, f"Expected False, but got '{is_invisible}'"
 
 # TEARDOWN
 sut.quit()
 
 
+# ********
+
+#Test case 8: Sorting by price ascending
+#ARRANGE
+sut = webdriver.Chrome()
+sut.get(BASE_URL)
+sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+sut.find_element(*LOGIN_BUTTON_LOC).click()
+
+# ACT
+sort_dropdown = sut.find_element(*SORT_PRODUCTS_DROPDOWN)
+select = Select(sort_dropdown)
+select.select_by_visible_text("Price (low to high)")
+time.sleep(5)
+
+items_to_order = sut.find_elements(By.CLASS_NAME, "inventory_item_price")
+price_list = []
+cleaned_price_list = []
+
+for price in items_to_order:
+    price_list.append(price.text)
+    cleaned_price_list = [float(price.replace('$', '')) for price in price_list]
+
+# #ASSERT
+assert cleaned_price_list[0] == min(cleaned_price_list), f"Expected minimum value is {min(cleaned_price_list)}, but got '{cleaned_price_list[0]}'"
+
+# TEARDOWN
+sut.quit()
