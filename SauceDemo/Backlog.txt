@@ -1,0 +1,3 @@
+1. Stworzyć page object models
+2. Dlaczego nie działają ustawienia chrome-options
+4. Przetestować sortowanie alfabetyczne.

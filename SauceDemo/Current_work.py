@@ -1,0 +1,95 @@
+#Tested page: https://www.saucedemo.com/
+
+
+#IMPORTS
+import time
+import unittest
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
+
+
+#SUPPORT
+# WebDriverWait(sut, 10).until(EC.element_to_be_clickable(SUBPAGE_WAIT_CONDITIONS_BUTTON)).click()
+# screenshot_file_path = 'screenshot.png'
+# driver.save_screenshot(screenshot_file_path)
+
+#SETUP
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Enable headless mode
+chrome_options.add_argument("--no-sandbox")  # Bypass OS security model (Linux)
+chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+chrome_options.add_argument("enable-logging")
+chrome_options.add_argument("v=1")
+
+# Enable logging to a specific log file
+log_file_path = "chromedriver.log"  # Specify your desired log file name
+chrome_options.add_argument(f"--log-path={log_file_path}")
+chrome_options.add_argument("--log-level=ALL")  # Log levels: ALL, DEBUG, INFO, WARNING, SEVERE, OFF
+
+#LOCATORS
+BASE_URL = 'https://www.saucedemo.com/'
+USERNAME_FIELD_LOC = (By.XPATH, "//input[@id='user-name']")
+PASSWORD_FIELD_LOC = (By.XPATH, "//input[@id='password']")
+LOGIN_PAGE_BANNER_LOC = (By.XPATH, "//div[@class='login_logo']")
+LOGIN_PAGE_TITLE_EXPECTED = 'Swag Labs'
+LOGIN_BUTTON_LOC = (By.XPATH, "//input[@id='login-button']")
+APP_LOGO_LOC = (By.XPATH, "//div[@class='app_logo']")
+APP_LOGO_EXPECTED = 'Swag Labs'
+ERROR_WRONG_LOGIN_EXPECTED = 'Epic sadface: Username and password do not match any user in this service'
+ERROR_LOC = (By.CSS_SELECTOR, "h3[data-test='error']")
+SHOPPING_CART_NUMBER_LOC = (By.XPATH, "//span[@class='shopping_cart_badge']")
+LEFT_MENU_BURGER_OPEN_BUTTON = (By.XPATH, "//button[@id='react-burger-menu-btn']")
+LEFT_MENU_BURGER_CLOSE_BUTTON = (By.XPATH, "//button[@id='react-burger-cross-btn']")
+LOGOUT_BUTTON = (By.XPATH, "//a[@id='logout_sidebar_link']")
+ALL_ITEMS_BUTTON = (By.XPATH, "//a[@id='inventory_sidebar_link']")
+SHOPPING_CART_LOC = (By.XPATH, "//a[@class='shopping_cart_link']")
+LEFT_MENU_BURGER_RESET_APP_STATUS_BUTTON = (By.XPATH, "//a[@id='reset_sidebar_link']")
+SORT_PRODUCTS_DROPDOWN = (By.XPATH, "//select[@class='product_sort_container']")
+
+SORTING_METHODS_DICT = {"NAME ASC" : "Name (A to Z)", "NAME DESC" : "Name (Z to A)", "PRICE ASC" : "Price  (low to high)", "PRICE DESC" : "Price  (high to low)"}
+
+
+#TEST DATA
+# Accepted usernames are:
+USERNAME_VALID = 'standard_user'
+# locked_out_user
+# problem_user
+# performance_glitch_user
+# error_user
+# visual_user
+
+# # Password for all users:
+PASSWORD_VALID = 'secret_sauce'
+
+# ********
+
+#Test case 9: Sorting by name descending
+#ARRANGE
+sut = webdriver.Chrome()
+sut.get(BASE_URL)
+sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+sut.find_element(*LOGIN_BUTTON_LOC).click()
+
+# ACT
+sort_dropdown = sut.find_element(*SORT_PRODUCTS_DROPDOWN)
+select = Select(sort_dropdown)
+select.select_by_visible_text("Name (Z to A)")
+
+items_to_order = sut.find_elements(By.CLASS_NAME, "inventory_item_name")
+products_list = []
+
+for product_name in items_to_order:
+    products_list.append(product_name.text)
+
+#ASSERT
+assert products_list[0] == max(products_list), f"Expected first value is {max(products_list)}, but got '{products_list[0]}'"
+
+# TEARDOWN
+sut.quit()

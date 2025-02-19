@@ -248,3 +248,31 @@ assert cleaned_price_list[0] == min(cleaned_price_list), f"Expected minimum valu
 
 # TEARDOWN
 sut.quit()
+
+# ********
+
+#Test case 9: Sorting by name descending
+#ARRANGE
+sut = webdriver.Chrome()
+sut.get(BASE_URL)
+sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+sut.find_element(*LOGIN_BUTTON_LOC).click()
+
+# ACT
+sort_dropdown = sut.find_element(*SORT_PRODUCTS_DROPDOWN)
+select = Select(sort_dropdown)
+select.select_by_visible_text("Name (Z to A)")
+
+items_to_order = sut.find_elements(By.CLASS_NAME, "inventory_item_name")
+products_list = []
+
+for product_name in items_to_order:
+    products_list.append(product_name.text)
+
+#ASSERT
+assert products_list[0] == max(products_list), f"Expected first value is {max(products_list)}, but got '{products_list[0]}'"
+
+# TEARDOWN
+sut.quit()
+
