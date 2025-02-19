@@ -51,8 +51,9 @@ ALL_ITEMS_BUTTON = (By.XPATH, "//a[@id='inventory_sidebar_link']")
 SHOPPING_CART_LOC = (By.XPATH, "//a[@class='shopping_cart_link']")
 LEFT_MENU_BURGER_RESET_APP_STATUS_BUTTON = (By.XPATH, "//a[@id='reset_sidebar_link']")
 SORT_PRODUCTS_DROPDOWN = (By.XPATH, "//select[@class='product_sort_container']")
-LEFT_MENU_BURGER_RESET_APP_STATUS_BUTTON = (By.XPATH, "//a[@id='reset_sidebar_link']")
-SORT_PRODUCTS_DROPDOWN = (By.XPATH, "//select[@class='product_sort_container']")
+FACEBOOK_LOGO_LOC = (By.XPATH, "//a[@data-test = 'social-facebook']")
+X_LOGO_LOC = (By.XPATH, "//a[@data-test = 'social-twitter']")
+LINKEDIN_LOGO_LOC = (By.XPATH, "//a[@data-test = 'social-linkedin']")
 
 SORTING_METHODS_DICT = {"NAME ASC" : "Name (A to Z)", "NAME DESC" : "Name (Z to A)", "PRICE ASC" : "Price  (low to high)", "PRICE DESC" : "Price  (high to low)"}
 
@@ -276,3 +277,25 @@ assert products_list[0] == max(products_list), f"Expected first value is {max(pr
 # TEARDOWN
 sut.quit()
 
+# ********
+
+#Test case 10: Social media links
+#ARRANGE
+sut = webdriver.Chrome()
+sut.get(BASE_URL)
+sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+sut.find_element(*LOGIN_BUTTON_LOC).click()
+
+# ACT
+x_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(X_LOGO_LOC))
+facebook_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(FACEBOOK_LOGO_LOC))
+linkedin_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(LINKEDIN_LOGO_LOC))
+
+#ASSERT
+assert x_is_visible, f"Element {x_is_visible} should  be visible!"
+assert facebook_is_visible, f"Element {facebook_is_visible} should  be visible!"
+assert linkedin_is_visible, f"Element {linkedin_is_visible} should  be visible!"
+
+# TEARDOWN
+sut.quit()
