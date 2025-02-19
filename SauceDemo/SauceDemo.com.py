@@ -10,22 +10,25 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 #SUPPORT
-# WebDriverWait(driver, 10).until(EC.element_to_be_clickable(SUBPAGE_WAIT_CONDITIONS_BUTTON)).click()
+# WebDriverWait(sut, 10).until(EC.element_to_be_clickable(SUBPAGE_WAIT_CONDITIONS_BUTTON)).click()
 # screenshot_file_path = 'screenshot.png'
 # driver.save_screenshot(screenshot_file_path)
-
-#LOCATORS
-BASE_URL = 'https://www.saucedemo.com/'
-
 
 #SETUP
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # Enable headless mode
 chrome_options.add_argument("--no-sandbox")  # Bypass OS security model (Linux)
 chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+chrome_options.add_argument("enable-logging")
+chrome_options.add_argument("v=1")
 
-#LOGIN_PAGE
+# Enable logging to a specific log file
+log_file_path = "chromedriver.log"  # Specify your desired log file name
+chrome_options.add_argument(f"--log-path={log_file_path}")
+chrome_options.add_argument("--log-level=ALL")  # Log levels: ALL, DEBUG, INFO, WARNING, SEVERE, OFF
+
 #LOCATORS
+BASE_URL = 'https://www.saucedemo.com/'
 USERNAME_FIELD_LOC = (By.XPATH, "//input[@id='user-name']")
 PASSWORD_FIELD_LOC = (By.XPATH, "//input[@id='password']")
 LOGIN_PAGE_BANNER_LOC = (By.XPATH, "//div[@class='login_logo']")
@@ -41,7 +44,6 @@ LEFT_MENU_BURGER_CLOSE_BUTTON = (By.XPATH, "//button[@id='react-burger-cross-btn
 LOGOUT_BUTTON = (By.XPATH, "//a[@id='logout_sidebar_link']")
 ALL_ITEMS_BUTTON = (By.XPATH, "//a[@id='inventory_sidebar_link']")
 SHOPPING_CART_LOC = (By.XPATH, "//a[@class='shopping_cart_link']")
-
 
 #TEST DATA
 # Accepted usernames are:
@@ -59,6 +61,12 @@ PASSWORD_VALID = 'secret_sauce'
 
 #Test case 1: Login page is visible
 #ARRANGE
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Enable headless mode
+chrome_options.add_argument("--no-sandbox")  # Bypass OS security model (Linux)
+chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+chrome_options.add_argument("--window-size=1920,1080")
+
 sut = webdriver.Chrome(options=chrome_options)
 sut.get(BASE_URL)
 
@@ -191,6 +199,7 @@ sut.find_element(*SHOPPING_CART_LOC).click()
 inventory_count = len(WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
 
 try:
+
     #ASSERT
     assert inventory_count == 6, f"Expected number of items is 6, but got '{inventory_count}'"
 
@@ -199,6 +208,7 @@ except Exception as e:
 
 # TEARDOWN
 sut.quit()
+
 
 # ********
 
