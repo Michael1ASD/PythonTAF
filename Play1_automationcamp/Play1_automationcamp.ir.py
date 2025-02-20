@@ -1,6 +1,7 @@
 import time
 
 from selenium.common import NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
@@ -85,17 +86,34 @@ SUBPAGE_WAIT_CONDITIONS_BUTTON = (By.XPATH, '//a[@href="expected_conditions.html
 
 #-------------------
 
-# TEST CASE 5 - Wait for element to be enabled
+# # TEST CASE 5 - Wait for element to be enabled
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get(BASE_URL)
+# driver.find_element(*SUBPAGE_WAIT_CONDITIONS_BUTTON).click()
+#
+# #ACT
+# driver.find_element(By.XPATH, "//button[@id='enabled_trigger']").click()
+# enabled_button = WebDriverWait(driver, 6).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='enabled_target']")))
+#
+# # ASSERT
+# assert enabled_button.is_enabled(), "Button is still disabled"
+
+#-------------------
+
+# TEST CASE 6 - Keyboard Actions
 #ARRANGE
 driver = webdriver.Chrome()
-driver.get(BASE_URL)
-driver.find_element(*SUBPAGE_WAIT_CONDITIONS_BUTTON).click()
+driver.get("https://play1.automationcamp.ir/keyboard_events.html")
 
 #ACT
-driver.find_element(By.XPATH, "//button[@id='enabled_trigger']").click()
-# driver.find_element(By.XPATH, "/div[@id='invisibility_target']").click()
-enabled_button = WebDriverWait(driver, 6).until(EC.element_to_be_clickable((By.XPATH, "//button[@id='enabled_target']")))
+textbox = driver.find_element(By.XPATH, "//textarea[@id='area']")
+
+action = ActionChains(driver)
+action.click(textbox)
+action.send_keys("abc")
+action.perform()
 
 # ASSERT
-assert enabled_button.is_enabled(), "Button is still disabled"
-#
+assert textbox.get_attribute('value') == "abc", "No text typed in"
+
