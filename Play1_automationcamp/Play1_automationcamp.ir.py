@@ -1,5 +1,6 @@
 import time
 
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
@@ -27,10 +28,28 @@ driver.find_element(By.XPATH, "//button[@id='alert_trigger']").click()
 WebDriverWait(driver, 5).until(EC.alert_is_present())
 Alert(driver).accept()
 alert_handled = driver.find_element(By.XPATH, "//span[@id='alert_handled_badge']")
-print(alert_handled)
+
 #ASSERT
-assert EC.visibility_of_element_located(alert_handled)
+assert alert_handled.is_displayed(), "Alert not handled"
 
 #TEARDOWN
+driver.close()
+
+# # TEST CASE 2 - Wait for alert to be present
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get(BASE_URL)
+# driver.find_element(*SUBPAGE_WAIT_CONDITIONS_BUTTON).click()
+#
+# #ACT
+# driver.find_element(By.XPATH, "//button[@id='alert_trigger']").click()
+# WebDriverWait(driver, 5).until(EC.alert_is_present())
+# Alert(driver).accept()
+# alert_handled = driver.find_element(By.XPATH, "//span[@id='alert_handled_badge']")
+#
+# #ASSERT
+# assert alert_handled.is_displayed(), "Alert not handled"
+#
+# #TEARDOWN
 # driver.close()
 
