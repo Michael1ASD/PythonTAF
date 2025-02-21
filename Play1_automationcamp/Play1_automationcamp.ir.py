@@ -197,7 +197,7 @@ driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get("https://play1.automationcamp.ir/frames.html")
 
-#ACT
+#ACT  -
 iframe1 = driver.find_element(By.XPATH, "//iframe[@id='frame1']")
 driver.switch_to.frame(iframe1)
 iframe2 = driver.find_element(By.XPATH, "//iframe[@id='frame2']")
