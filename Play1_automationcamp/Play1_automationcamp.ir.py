@@ -101,19 +101,66 @@ SUBPAGE_WAIT_CONDITIONS_BUTTON = (By.XPATH, '//a[@href="expected_conditions.html
 
 #-------------------
 
-# TEST CASE 6 - Keyboard Actions
+# # TEST CASE 6 - Keyboard Actions
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get("https://play1.automationcamp.ir/keyboard_events.html")
+#
+# #ACT
+# textbox = driver.find_element(By.XPATH, "//textarea[@id='area']")
+#
+# action = ActionChains(driver)
+# action.click(textbox)
+# action.send_keys("abc")
+# action.perform()
+#
+# # ASSERT
+# assert textbox.get_attribute('value') == "abc", "No text typed in"
+
+#-------------------
+
+# # TEST CASE 6 - Mouse Actions
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get("https://play1.automationcamp.ir/mouse_events.html")
+#
+# #ACT
+# textbox = driver.find_element((By.XPATH, "//div[@id='click_area']"))
+# action = ActionChains(driver)
+# action.context_click(textbox)
+# # ASSERT
+
+#-------------------
+
+# # TEST CASE 7 - Perform mouse hover to interact with drop-down menu
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get("https://play1.automationcamp.ir/mouse_events.html")
+#
+# #ACT
+# hoverable = driver.find_element(By.XPATH, "//button[@class='dropbtn']")
+# ActionChains(driver).move_to_element(hoverable).perform()
+# driver.find_element(By.XPATH, "//p[@id='dd_python']").click()
+# validation = driver.find_element(By.XPATH, "//h4[@id='hover_validate']")
+#
+# # ASSERT
+# assert validation.text == ("Python"), "No dropdown selected"
+
+#-------------------
+
+# TEST CASE 8 - Drag and Drop - Drag blue box on the green box
+
 #ARRANGE
 driver = webdriver.Chrome()
-driver.get("https://play1.automationcamp.ir/keyboard_events.html")
+driver.get("https://play1.automationcamp.ir/mouse_events.html")
 
 #ACT
-textbox = driver.find_element(By.XPATH, "//textarea[@id='area']")
-
-action = ActionChains(driver)
-action.click(textbox)
-action.send_keys("abc")
-action.perform()
+draggable = driver.find_element(By.XPATH, "//button[@id='drag_source']")
+start = draggable.location
+finish = driver.find_element(By.ID, "drop_target").location
+ActionChains(driver).drag_and_drop_by_offset(draggable, finish['x'] - start['x'], finish['y'] - start['y']).perform()
 
 # ASSERT
-assert textbox.get_attribute('value') == "abc", "No text typed in"
+assert driver.find_element(By.XPATH, "//div[@id='drop_target']").text == "Drop is successful!", "Drag and drop failed"
 
+#-------------------
