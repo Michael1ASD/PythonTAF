@@ -148,19 +148,41 @@ SUBPAGE_WAIT_CONDITIONS_BUTTON = (By.XPATH, '//a[@href="expected_conditions.html
 
 #-------------------
 
-# TEST CASE 8 - Drag and Drop - Drag blue box on the green box
+# #TEST CASE 8 - Drag and Drop - Drag blue box on the green box
+# #ARRANGE
+# driver = webdriver.Chrome()
+# driver.get("https://play1.automationcamp.ir/mouse_events.html")
+#
+# #ACT
+# draggable = driver.find_element(By.XPATH, "//button[@id='drag_source']")
+# start = draggable.location
+# finish = driver.find_element(By.ID, "drop_target").location
+# ActionChains(driver).drag_and_drop_by_offset(draggable, finish['x'] - start['x'], finish['y'] - start['y']).perform()
+#
+# # ASSERT
+# assert driver.find_element(By.XPATH, "//div[@id='drop_target']").text == "Drop is successful!", "Drag and drop failed"
+
+#-------------------
+
+# TEST CASE 9 - Multiple windows
 
 #ARRANGE
 driver = webdriver.Chrome()
-driver.get("https://play1.automationcamp.ir/mouse_events.html")
+
+driver.maximize_window()
+driver.get("https://play1.automationcamp.ir/multi_window.html")
 
 #ACT
-draggable = driver.find_element(By.XPATH, "//button[@id='drag_source']")
-start = draggable.location
-finish = driver.find_element(By.ID, "drop_target").location
-ActionChains(driver).drag_and_drop_by_offset(draggable, finish['x'] - start['x'], finish['y'] - start['y']).perform()
+source_tab = driver.current_window_handle
+button_opening_new_tab = driver.find_element(By.XPATH, "//a[@id='window1']")
+button_opening_new_tab.click()
+all_tabs = driver.window_handles
+for handle in all_tabs:
+    if handle != source_tab:
+        driver.switch_to.window(handle)
+        assert driver.find_element(By.XPATH, "//a[@class='navbar-brand']").is_displayed(), "New tab not visible"
+button_in_the_new_tab = driver.find_element(By.XPATH, "//button[@id='click_me_2']")
+button_in_the_new_tab.click()
 
 # ASSERT
-assert driver.find_element(By.XPATH, "//div[@id='drop_target']").text == "Drop is successful!", "Drag and drop failed"
-
-#-------------------
+assert button_in_the_new_tab.text == "Clicked", "Target button not clicked"
