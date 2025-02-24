@@ -27,15 +27,12 @@ TOPPINGS = {"Onions": "Onions", "Green Olive": "Green Olive", "Tomatoes": "Tomat
 ADD_TO_CART_BUTTON_LOC = "//button[@id='submit_button']"
 
 
-
 # TEST CASE 1 - Adding to Cart
-
 #ARRANGE
 driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(BASE_URL)
 
-validation = driver.find_element(By.XPATH, "//h2[@id='added_message']")
 
 #ACT
 quantity = driver.find_element(By.XPATH, "//input[@id='quantity']")
