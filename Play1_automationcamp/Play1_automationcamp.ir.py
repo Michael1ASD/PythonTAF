@@ -9,10 +9,16 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 # WebDriverWait(driver, 10).until(EC.element_to_be_clickable(SUBPAGE_WAIT_CONDITIONS_BUTTON)).click()
 # screenshot_file_path = 'screenshot.png'
 # driver.save_screenshot(screenshot_file_path)
+
+
+chrome_options = Options()
+prefs = {"download.default_directory" : r"C:\Users\User\Downloads\test"}
+chrome_options.add_experimental_option("prefs",prefs)
 
 # LOCATORS
 BASE_URL = 'https://play1.automationcamp.ir/'
@@ -189,19 +195,118 @@ SUBPAGE_WAIT_CONDITIONS_BUTTON = (By.XPATH, '//a[@href="expected_conditions.html
 
 #-------------------
 
-# TEST CASE 10 - Switch to frames using various locators and interact with the inner content
+# # TEST CASE 10 - Switch to frames using various locators and interact with the inner content
+#
+# #ARRANGE
+# driver = webdriver.Chrome()
+#
+# driver.maximize_window()
+# driver.get("https://play1.automationcamp.ir/frames.html")
+#
+# #ACT  -
+# iframe1 = driver.find_element(By.XPATH, "//iframe[@id='frame1']")
+# driver.switch_to.frame(iframe1)
+# iframe2 = driver.find_element(By.XPATH, "//iframe[@id='frame2']")
+# driver.switch_to.frame(iframe2)
+#
+# # ASSERT
+# assert driver.find_element(By.XPATH, "//button[@id='click_me_2']").is_displayed()
+
+#-------------------
+
+# TEST CASE 11 - Basic Form Controls
 
 #ARRANGE
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(chrome_options)
 
 driver.maximize_window()
-driver.get("https://play1.automationcamp.ir/frames.html")
+driver.get("https://play1.automationcamp.ir/forms.html")
 
 #ACT  -
-iframe1 = driver.find_element(By.XPATH, "//iframe[@id='frame1']")
-driver.switch_to.frame(iframe1)
-iframe2 = driver.find_element(By.XPATH, "//iframe[@id='frame2']")
-driver.switch_to.frame(iframe2)
+# Handling a checkbox
+# checkbox_python = driver.find_element(By.XPATH, "//input[@id='check_python']")
+# checkbox_python.click()
+# assert driver.find_element(By.XPATH, "//span[@id='check_validate']").is_displayed()
 
-# ASSERT
-assert driver.find_element(By.XPATH, "//button[@id='click_me_2']").is_displayed()
+# checkbox_selenium = driver.find_element(By.XPATH, "//input[@id='rad_selenium']")
+# checkbox_selenium.click()
+# assert driver.find_element(By.XPATH, "//span[@id='rad_validate']").is_displayed()
+
+# Handling a dropdown
+# dropdown_cypress = driver.find_element(By.XPATH, "//select[@id='select_tool']")
+# dropdown_cypress.click()
+# cypress_option = driver.find_element(By.XPATH, "//option[@value='cyp']").click()
+# assert driver.find_element(By.XPATH, "//span[@id='select_tool_validate']").is_displayed()
+
+# Selecting multiple options
+# language_multiple_options_java = driver.find_element(By.XPATH, "//select[@id='select_lang']//option[@value='java']")
+# language_multiple_options_python = driver.find_element(By.XPATH, "//select[@id='select_lang']//option[@value='python']")
+# ActionChains(driver).key_down(Keys.CONTROL)
+# language_multiple_options_java.click()
+# language_multiple_options_python.click()
+# assert driver.find_element(By.XPATH, "//span[@id='select_lang_validate']").text == "java,python"
+
+# Handling a slider
+# fluency_slider = driver.find_element(By.XPATH, "//input[@type='range']")
+# actions = ActionChains(driver)
+# actions.drag_and_drop_by_offset(fluency_slider, 200,0).perform()
+# assert driver.find_element(By.XPATH, "//span[@id='fluency_validate']").text == "5"
+
+# Upload a single file
+# upload_file = r"C:\Users\User\Downloads\Playground_UPLOAD\testfile.txt"
+# file_input = driver.find_element(By.XPATH, "//input[@id='upload_cv']")
+# file_input.send_keys(upload_file)
+# action_cv_upload = ActionChains(driver)
+# action_cv_upload.send_keys(Keys.ENTER).perform()
+# assert driver.find_element(By.XPATH, "//span[@id='validate_cv']").text == "testfile.txt"
+
+# Upload multiple files
+# file_paths = [r"C:\Users\User\Downloads\Playground_UPLOAD\testfile.txt", r"C:\Users\User\Downloads\Playground_UPLOAD\testfile2.txt"]
+# combined_paths = "\n".join(file_paths)
+# files_input = driver.find_element(By.XPATH, "//input[@id='upload_files']")
+# files_input.send_keys(combined_paths)
+# action_files_upload = ActionChains(driver)
+# action_files_upload.send_keys(Keys.ENTER).perform()
+# assert driver.find_element(By.XPATH, "//span[@id='validate_files']").text == "testfile.txt testfile2.txt"
+
+# Download file
+# download_file_button = driver.find_element(By.XPATH, "//a[@id='download_file']")
+# download_file_button.click()
+# # BRAK ASERCJI
+
+# Non-English Labels and Locators
+checkbox_hindi = driver.find_element(By.XPATH, "//input[@id='मराठी']")
+checkbox_hindi.click()
+assert driver.find_element(By.XPATH, "//span[@id='check_validate_non_english']").text == "मराठी"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# primary_skill_dropdown = driver.find_element(By.XPATH, "//select[@id='select_tool']")
+# primary_skill_dropdown.click()
+# prim
+
+
+
+
+
+
+
+
+# driver.switch_to.frame(iframe1)
+# iframe2 = driver.find_element(By.XPATH, "//iframe[@id='frame2']")
+# driver.switch_to.frame(iframe2)
+#
+# # ASSERT
+# assert driver.find_element(By.XPATH, "//button[@id='click_me_2']").is_displayed()
