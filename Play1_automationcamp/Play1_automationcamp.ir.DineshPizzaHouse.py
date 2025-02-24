@@ -33,7 +33,6 @@ driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(BASE_URL)
 
-
 #ACT
 quantity = driver.find_element(By.XPATH, "//input[@id='quantity']")
 quantity.send_keys("1")

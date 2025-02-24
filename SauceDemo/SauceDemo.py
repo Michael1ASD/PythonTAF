@@ -26,6 +26,7 @@ chrome_options.add_argument("--no-sandbox")  # Bypass OS security model (Linux)
 chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
 chrome_options.add_argument("enable-logging")
 chrome_options.add_argument("v=1")
+chrome_options.add_argument("--start-maximized")
 
 # Enable logging to a specific log file
 log_file_path = "chromedriver.log"  # Specify your desired log file name
@@ -73,11 +74,11 @@ PASSWORD_VALID = 'secret_sauce'
 
 #Test case 1: Login page is visible
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
 
 #ACT
-actual_title = sut.title
+actual_title = driver.title
 
 #ASSERT
 assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
@@ -85,158 +86,158 @@ assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 2: Successful login
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
 
 #ACT
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 #ASSERT
-app_logo_actual = sut.find_element(*APP_LOGO_LOC)
+app_logo_actual = driver.find_element(*APP_LOGO_LOC)
 assert app_logo_actual.text == APP_LOGO_EXPECTED, f"Expected logo '{APP_LOGO_EXPECTED}', but got '{app_logo_actual}'"
 
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 3: Failed login
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
 
 #ACT
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys("Invalid password")
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 #ASSERT
-error_banner = sut.find_element(*ERROR_LOC)
+error_banner = driver.find_element(*ERROR_LOC)
 assert error_banner.text == ERROR_WRONG_LOGIN_EXPECTED, f"Expected error '{ERROR_WRONG_LOGIN_EXPECTED}', but got '{error_banner.text}'"
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 4: Check if cart is empty
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 #ACT
 
 #ASSERT
-is_invisible = WebDriverWait(sut, 1).until(EC.invisibility_of_element_located(SHOPPING_CART_NUMBER_LOC))
+is_invisible = WebDriverWait(driver, 1).until(EC.invisibility_of_element_located(SHOPPING_CART_NUMBER_LOC))
 assert is_invisible, f"Element {is_invisible} should not be visible!"
 
 
 #TEARDOWN
 # sut.find_element(*LEFT_MENU_BURGER_CLOSE_BUTTON).click()
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 5: Logout
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 #ACT
-sut.find_element(*LEFT_MENU_BURGER_OPEN_BUTTON).click()
-WebDriverWait(sut, 3).until(EC.element_to_be_clickable(LOGOUT_BUTTON)).click()
-actual_title = sut.title
+driver.find_element(*LEFT_MENU_BURGER_OPEN_BUTTON).click()
+WebDriverWait(driver, 3).until(EC.element_to_be_clickable(LOGOUT_BUTTON)).click()
+actual_title = driver.title
 
 #ASSERT
 assert actual_title == LOGIN_PAGE_TITLE_EXPECTED, f"Expected title '{LOGIN_PAGE_TITLE_EXPECTED}', but got '{actual_title}'"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 6: Add all (6) items to the cart
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 time.sleep(3)
 
 #ACT
-add_to_cart_buttons = WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "btn_primary")))
+add_to_cart_buttons = WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "btn_primary")))
 for index in range(6):
     add_to_cart_buttons[index].click()
-sut.find_element(*SHOPPING_CART_LOC).click()
-inventory_count = len(WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
+driver.find_element(*SHOPPING_CART_LOC).click()
+inventory_count = len(WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
 
 #ASSERT
 assert inventory_count == 6, f"Expected number of items is 6, but got '{inventory_count}'"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
 
 
 # ********
 
 #Test case 7: Remove item from cart
 #ARRANGE
-sut = webdriver.Chrome(options=chrome_options)
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome(options=chrome_options)
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 # ACT
-add_to_cart_buttons = WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME,"btn_primary")))
+add_to_cart_buttons = WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "btn_primary")))
 add_to_cart_buttons[0].click()
-sut.find_element(*SHOPPING_CART_LOC).click()
-inventory_count = len(WebDriverWait(sut, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
-sut.find_element(By.CLASS_NAME, "cart_button").click()
-is_invisible = WebDriverWait(sut, 1).until(EC.invisibility_of_element_located((By.XPATH, "//button[text()='Remove']")))
+driver.find_element(*SHOPPING_CART_LOC).click()
+inventory_count = len(WebDriverWait(driver, 3).until(EC.presence_of_all_elements_located((By.CLASS_NAME, "inventory_item_name"))))
+driver.find_element(By.CLASS_NAME, "cart_button").click()
+is_invisible = WebDriverWait(driver, 1).until(EC.invisibility_of_element_located((By.XPATH, "//button[text()='Remove']")))
 
 #ASSERT
 assert is_invisible == True, f"Expected False, but got '{is_invisible}'"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
 
 
 # ********
 
 #Test case 8: Sorting by price ascending
 #ARRANGE
-sut = webdriver.Chrome()
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome()
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 # ACT
-sort_dropdown = sut.find_element(*SORT_PRODUCTS_DROPDOWN)
+sort_dropdown = driver.find_element(*SORT_PRODUCTS_DROPDOWN)
 select = Select(sort_dropdown)
 select.select_by_visible_text("Price (low to high)")
 time.sleep(5)
 
-items_to_order = sut.find_elements(By.CLASS_NAME, "inventory_item_price")
+items_to_order = driver.find_elements(By.CLASS_NAME, "inventory_item_price")
 price_list = []
 cleaned_price_list = []
 
@@ -248,24 +249,24 @@ for price in items_to_order:
 assert cleaned_price_list[0] == min(cleaned_price_list), f"Expected minimum value is {min(cleaned_price_list)}, but got '{cleaned_price_list[0]}'"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 9: Sorting by name descending
 #ARRANGE
-sut = webdriver.Chrome()
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome()
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 # ACT
-sort_dropdown = sut.find_element(*SORT_PRODUCTS_DROPDOWN)
+sort_dropdown = driver.find_element(*SORT_PRODUCTS_DROPDOWN)
 select = Select(sort_dropdown)
 select.select_by_visible_text("Name (Z to A)")
 
-items_to_order = sut.find_elements(By.CLASS_NAME, "inventory_item_name")
+items_to_order = driver.find_elements(By.CLASS_NAME, "inventory_item_name")
 products_list = []
 
 for product_name in items_to_order:
@@ -275,22 +276,22 @@ for product_name in items_to_order:
 assert products_list[0] == max(products_list), f"Expected first value is {max(products_list)}, but got '{products_list[0]}'"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
 
 # ********
 
 #Test case 10: Social media links
 #ARRANGE
-sut = webdriver.Chrome()
-sut.get(BASE_URL)
-sut.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
-sut.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
-sut.find_element(*LOGIN_BUTTON_LOC).click()
+driver = webdriver.Chrome()
+driver.get(BASE_URL)
+driver.find_element(*USERNAME_FIELD_LOC).send_keys(USERNAME_VALID)
+driver.find_element(*PASSWORD_FIELD_LOC).send_keys(PASSWORD_VALID)
+driver.find_element(*LOGIN_BUTTON_LOC).click()
 
 # ACT
-x_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(X_LOGO_LOC))
-facebook_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(FACEBOOK_LOGO_LOC))
-linkedin_is_visible = WebDriverWait(sut, 1).until(EC.visibility_of_element_located(LINKEDIN_LOGO_LOC))
+x_is_visible = WebDriverWait(driver, 1).until(EC.visibility_of_element_located(X_LOGO_LOC))
+facebook_is_visible = WebDriverWait(driver, 1).until(EC.visibility_of_element_located(FACEBOOK_LOGO_LOC))
+linkedin_is_visible = WebDriverWait(driver, 1).until(EC.visibility_of_element_located(LINKEDIN_LOGO_LOC))
 
 #ASSERT
 assert x_is_visible, f"Element {x_is_visible} should  be visible!"
@@ -298,4 +299,6 @@ assert facebook_is_visible, f"Element {facebook_is_visible} should  be visible!"
 assert linkedin_is_visible, f"Element {linkedin_is_visible} should  be visible!"
 
 # TEARDOWN
-sut.quit()
+driver.quit()
+
+
