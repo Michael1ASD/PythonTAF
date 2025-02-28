@@ -1,17 +1,11 @@
 # Klasa employees
 # ZROBIONE
-
 # Konstruktor przyjmuje nazwę pliku
 # ZROBIONE
-
 # Obiekt Employees zawiera listę obiektów Worker
 # ZROBIONE
-
 # Funkcja która zwraca listę pracowników którzy mają zadany status (w klasie employees)
 # ZROBIONE
-
-#Po za tym patrzę że ta funkcja mogła by tak naprawdę być w konstruktorze,
-# nie musisz wtedy przechowywać w obiekcie informacji o nazwie pliku w zmiennej "self.imported_file"
 
 import json
 
