@@ -59,15 +59,8 @@ class Employee:
             return workers
 
     def get_workers_with_status(self, status):
-        # Zwracanie reprezentacji pracowników z określonym statusem
         return [repr(worker) for worker in self.workers if worker.status == status]
 
 
-if __name__ == "__main__":
-    employee_manager = Employee('clients.json')  # Podaj nazwę pliku JSON
-
-    status_to_check = "True"
-    status_workers = employee_manager.get_workers_with_status(status_to_check)
-    print(f"Pracownicy z statusem '{status_to_check}':")
-    for worker_repr in status_workers:
-        print(worker_repr)  # Wyświetlenie reprezentacji pracowników
+employee_manager = Employee('clients.json')
+print(employee_manager.get_workers_with_status("True"))
