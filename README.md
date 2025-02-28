@@ -1,1 +1,1 @@
-# PythonSelenium
+# PythonTestAutomationPractice
