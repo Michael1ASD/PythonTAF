@@ -39,7 +39,7 @@ class Employee:
     def get_all_workers(self, imported_file):
         with open(imported_file, "r") as file:
             data = json.load(file)
-            workers = []
+            all_workers = []
             for worker_data in data["employees"]:
                 worker = Worker(
                     name=worker_data.get("name"),
@@ -55,8 +55,8 @@ class Employee:
                     project_start_date=worker_data.get("project", {}).get("start_date"),
                     project_end_date=worker_data.get("project", {}).get("end_date"),
                 )
-                workers.append(worker)
-            return workers
+                all_workers.append(worker)
+            return all_workers
 
     def get_workers_with_status(self, status):
         return [repr(worker) for worker in self.workers if worker.status == status]
